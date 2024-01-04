@@ -11,5 +11,8 @@
                 "timed-furigana.js"
             ]
         }
+    ],
+    "web_accessible_resources": [
+        "configurations/*.js"
     ]
 }
