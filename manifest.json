@@ -1,0 +1,15 @@
+{
+    "manifest_version": 2,
+    "name": "Timed Furigana",
+    "version": "0.1.0",
+    "content_scripts": [
+        {
+            "matches": [
+                "*://*.youtube.com/*"
+            ],
+            "js": [
+                "timed-furigana.js"
+            ]
+        }
+    ]
+}
