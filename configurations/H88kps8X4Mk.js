@@ -15,8 +15,8 @@ export const cues = [
     },
     {
         line: 2,
-        start: 60+22.700,
-        end: 60+26.533,
+        start: 22.700,
+        end: 26.533,
         kanjis: [
             '目 め',
             '見 み',
@@ -24,5 +24,17 @@ export const cues = [
             '形 けい',
             '腐 くさ'
         ]
+    },
+    {
+        line: 3,
+        start: 26.566,
+        end: 30.700,
+        kanjis: []
+    },
+    {
+        line: 4,
+        start: 30.733,
+        end: 34.666,
+        kanjis: []
     }
 ];

@@ -16,7 +16,7 @@ function main() {
         console.debug('Configuration file loaded');
 
         waitForElement('video').then(videoElement => {
-            console.debug('Video element found');
+            console.debug('Video found');
 
             for (const textTrack of videoElement.textTracks) {
                 textTrack.mode = 'disabled';
@@ -33,14 +33,21 @@ function main() {
                 for (const cue of configuration.cues) {
                     var line = lines[cue.line - 1];
 
-                    cue.kanjis.forEach(kanji => {
-                        const left = kanji.substring(0, kanji.indexOf(' '));
-                        const right = kanji.substring(kanji.indexOf(' ') + 1);
+                    var done = '';
+                    var todo = line;
 
-                        line = line.replace(left, `<ruby>${left}<rt>${right}</rt></ruby>`);
+                    cue.kanjis.forEach(kanjiWithFurigana => {
+                        const kanji = kanjiWithFurigana.substring(0, kanjiWithFurigana.indexOf(' '));
+                        const furigana = kanjiWithFurigana.substring(kanjiWithFurigana.indexOf(' ') + 1);
+
+                        var kanjiIndex = todo.indexOf(kanji);
+                        done += todo.substring(0, kanjiIndex) + `<ruby>${kanji}<rt>${furigana}</rt></ruby>`;
+                        todo = todo.substring(kanjiIndex + 1);
                     });
 
-                    track.addCue(new VTTCue(cue.start, cue.end, line));
+                    done += todo;
+
+                    track.addCue(new VTTCue(cue.start, cue.end, done));
                 }
 
                 console.debug('Cues added');
