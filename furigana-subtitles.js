@@ -3,7 +3,7 @@ const SUPPORTED_VIDEO_IDS = [
 ];
 
 function main() {
-    console.debug('Extension loaded');
+    console.debug('Furigana Subtitles extension loaded');
 
     const videoId = (new URLSearchParams(window.location.search)).get('v');
 
@@ -12,7 +12,7 @@ function main() {
         return;
     }
 
-    import(browser.extension.getURL(`/configurations/${videoId}.js`)).then(configuration => {
+    import(chrome.runtime.getURL(`/configurations/${videoId}.js`)).then(configuration => {
         console.debug('Configuration file loaded');
 
         waitForElement('video').then(videoElement => {
