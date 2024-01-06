@@ -9,6 +9,9 @@
             ],
             "js": [
                 "timed-furigana.js"
+            ],
+            "css": [
+                "timed-furigana.css"
             ]
         }
     ],

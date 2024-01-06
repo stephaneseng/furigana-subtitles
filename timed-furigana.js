@@ -33,6 +33,10 @@ function main() {
                 for (const cue of configuration.cues) {
                     var line = lines[cue.line - 1];
 
+                    if (cue.lineSliceStart !== undefined || cue.lineSliceEnd !== undefined) {
+                        line = line.split(' ').slice(cue.lineSliceStart, cue.lineSliceEnd).join(' ');
+                    }
+
                     var done = '';
                     var todo = line;
 
@@ -42,12 +46,14 @@ function main() {
 
                         var kanjiIndex = todo.indexOf(kanji);
                         done += todo.substring(0, kanjiIndex) + `<ruby>${kanji}<rt>${furigana}</rt></ruby>`;
-                        todo = todo.substring(kanjiIndex + 1);
+                        todo = todo.substring(kanjiIndex + kanji.length);
                     });
 
                     done += todo;
 
-                    track.addCue(new VTTCue(cue.start, cue.end, done));
+                    var vttCue = new VTTCue(cue.start, cue.end, done);
+                    vttCue.line = -2;
+                    track.addCue(vttCue);
                 }
 
                 console.debug('Cues added');
