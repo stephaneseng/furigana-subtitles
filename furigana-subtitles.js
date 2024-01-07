@@ -1,4 +1,5 @@
 const SUPPORTED_VIDEO_IDS = [
+    'I88PrE-KUPk', // 2020-07-13 MILABO
     'H88kps8X4Mk' // 2023-06-04 Hanaichi Monnme
 ];
 
@@ -34,7 +35,7 @@ function main() {
                     var line = lines[cue.line - 1];
 
                     if (cue.lineSliceStart !== undefined || cue.lineSliceEnd !== undefined) {
-                        line = line.split(' ').slice(cue.lineSliceStart, cue.lineSliceEnd).join(' ');
+                        line = line.split(/[ 、]/).slice(cue.lineSliceStart, cue.lineSliceEnd).join(' ');
                     }
 
                     var done = '';
@@ -54,9 +55,11 @@ function main() {
                     var vttCue = new VTTCue(cue.start, cue.end, done);
                     vttCue.line = -2;
                     track.addCue(vttCue);
+
+                    console.debug(`Cue added for line ${cue.line}`);
                 }
 
-                console.debug('Cues added');
+                console.debug('All cues added');
             });
         });
     });
