@@ -4,7 +4,7 @@ const SUPPORTED_VIDEO_IDS = [
 ];
 
 function main() {
-    console.debug('Furigana Subtitles extension loaded');
+    console.debug('Furigana Subtitles extension loaded, going to load the configuration file');
 
     const videoId = (new URLSearchParams(window.location.search)).get('v');
 
@@ -14,49 +14,31 @@ function main() {
     }
 
     import(chrome.runtime.getURL(`/configurations/${videoId}.js`)).then(configuration => {
-        console.debug('Configuration file loaded');
+        console.debug('Configuration file loaded, going to wait for the video');
 
         waitForElement('video').then(videoElement => {
-            console.debug('Video found');
+            console.debug('Video found, going to wait for the pinned comment');
 
             for (const textTrack of videoElement.textTracks) {
                 textTrack.mode = 'disabled';
             }
 
             waitForElement('#comments #pinned-comment-badge').then(pinnedCommentBadgeElement => {
-                console.debug('Pinned comment found');
-
-                const lines = pinnedCommentBadgeElement.closest('#main').querySelector('#content-text').innerText.split(/\r\n/g);
+                console.debug('Pinned comment found, going to add cues');
 
                 const track = videoElement.addTextTrack('captions', 'Japanese', 'jp');
                 track.mode = 'showing';
 
-                for (const cue of configuration.cues) {
-                    var line = lines[cue.line - 1];
+                const lyricsLines = pinnedCommentBadgeElement.closest('#main').querySelector('#content-text').innerText.split(/\r\n/g);
 
-                    if (cue.lineSliceStart !== undefined || cue.lineSliceEnd !== undefined) {
-                        line = line.split(/[ 、]/).slice(cue.lineSliceStart, cue.lineSliceEnd).join(' ');
-                    }
+                for (const cueConfiguration of configuration.cues) {
+                    const cueLine = extractCueLine(cueConfiguration, lyricsLines);
 
-                    var done = '';
-                    var todo = line;
-
-                    cue.kanjis.forEach(kanjiWithFurigana => {
-                        const kanji = kanjiWithFurigana.substring(0, kanjiWithFurigana.indexOf(' '));
-                        const furigana = kanjiWithFurigana.substring(kanjiWithFurigana.indexOf(' ') + 1);
-
-                        var kanjiIndex = todo.indexOf(kanji);
-                        done += todo.substring(0, kanjiIndex) + `<ruby>${kanji}<rt>${furigana}</rt></ruby>`;
-                        todo = todo.substring(kanjiIndex + kanji.length);
-                    });
-
-                    done += todo;
-
-                    var vttCue = new VTTCue(cue.start, cue.end, done);
+                    const vttCue = new VTTCue(cueConfiguration.start, cueConfiguration.end, cueLine);
                     vttCue.line = -2;
                     track.addCue(vttCue);
 
-                    console.debug(`Cue added for line ${cue.line}`);
+                    console.debug(`Cue added for line ${cueConfiguration.line}`);
                 }
 
                 console.debug('All cues added');
@@ -84,6 +66,30 @@ function waitForElement(selector) {
             subtree: true
         });
     });
+}
+
+function extractCueLine(cueConfiguration, lyricsLines) {
+    var line = lyricsLines[cueConfiguration.line - 1];
+
+    if (cueConfiguration.lineSliceStart !== undefined || cueConfiguration.lineSliceEnd !== undefined) {
+        line = line.split(/[ 、]/).slice(cueConfiguration.lineSliceStart, cueConfiguration.lineSliceEnd).join(' ');
+    }
+
+    var cueLine = '';
+
+    cueConfiguration.kanjis.forEach(kanjiConfiguration => {
+        const kanjiConfigurationParts = kanjiConfiguration.split(/ /);
+        const kanji = kanjiConfigurationParts[0];
+        const furigana = kanjiConfigurationParts[1];
+
+        var kanjiIndex = line.indexOf(kanji);
+        cueLine += line.substring(0, kanjiIndex) + `<ruby>${kanji}<rt>${furigana}</rt></ruby>`;
+        line = line.substring(kanjiIndex + kanji.length);
+    });
+
+    cueLine += line;
+
+    return cueLine;
 }
 
 // https://stackoverflow.com/questions/34077641/how-to-detect-page-navigation-on-youtube-and-modify-its-appearance-seamlessly
