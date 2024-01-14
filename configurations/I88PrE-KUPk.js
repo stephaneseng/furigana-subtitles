@@ -688,8 +688,8 @@ export const cues = [
         lineSliceStart: 1,
         lineSliceEnd: 2,
         kanjis: [
-            '恥 は',
-            '踊 おど'
+            '見 み',
+            '届 とど'
         ]
     },
     {
@@ -699,7 +699,7 @@ export const cues = [
         lineSliceStart: 2,
         lineSliceEnd: 3,
         kanjis: [
-            '浅 あさ'
+            '欲 ほ'
         ]
     },
     {

@@ -4,24 +4,24 @@ const SUPPORTED_VIDEO_IDS = [
 ];
 
 function main() {
-    console.debug('Furigana Subtitles extension loaded, going to load the configuration file');
+    console.debug('Furigana Subtitles extension loaded, going to wait for the video');
 
-    const videoId = (new URLSearchParams(window.location.search)).get('v');
+    waitForElement('video').then(videoElement => {
+        console.debug('Video found, going to load the configuration file');
 
-    if (!SUPPORTED_VIDEO_IDS.includes(videoId)) {
-        console.debug('Video not supported');
-        return;
-    }
+        for (const textTrack of videoElement.textTracks) {
+            textTrack.mode = 'disabled';
+        }
 
-    import(chrome.runtime.getURL(`/configurations/${videoId}.js`)).then(configuration => {
-        console.debug('Configuration file loaded, going to wait for the video');
+        const videoId = (new URLSearchParams(window.location.search)).get('v');
 
-        waitForElement('video').then(videoElement => {
-            console.debug('Video found, going to wait for the pinned comment');
+        if (!SUPPORTED_VIDEO_IDS.includes(videoId)) {
+            console.debug('Video not supported');
+            return;
+        }
 
-            for (const textTrack of videoElement.textTracks) {
-                textTrack.mode = 'disabled';
-            }
+        import(chrome.runtime.getURL(`/configurations/${videoId}.js`)).then(configuration => {
+            console.debug('Configuration file loaded, going to wait for the pinned comment');
 
             waitForElement('#comments #pinned-comment-badge').then(pinnedCommentBadgeElement => {
                 console.debug('Pinned comment found, going to add cues');
