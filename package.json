@@ -1,0 +1,12 @@
+{
+  "name": "furigana-subtitles",
+  "version": "0.1.0",
+  "main": "furigana-subtitles.js",
+  "scripts": {
+    "test": "jest"
+  },
+  "devDependencies": {
+    "jest": "^29.7.0",
+    "jest-environment-jsdom": "^29.7.0"
+  }
+}

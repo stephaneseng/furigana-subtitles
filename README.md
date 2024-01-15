@@ -18,6 +18,13 @@ This browser extension adds Japanese subtitles with furigana to some Zutomayo Yo
 4. Ensure that the pinned comment is loaded, as the lyrics are taken from that pinned comment
 5. Subtitles should now be added to the video
 
+## Test
+
+```console
+npm ci
+npm test
+```
+
 ## References and inspirations
 
 * https://iandevlin.com/blog/2015/02/javascript/dynamically-adding-text-tracks-to-html5-video/

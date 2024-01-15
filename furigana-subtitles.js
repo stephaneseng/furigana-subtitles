@@ -94,3 +94,7 @@ function extractCueLine(cueConfiguration, lyricsLines) {
 
 // https://stackoverflow.com/questions/34077641/how-to-detect-page-navigation-on-youtube-and-modify-its-appearance-seamlessly
 document.addEventListener('yt-navigate-finish', main);
+
+module.exports = {
+    extractCueLine
+};
