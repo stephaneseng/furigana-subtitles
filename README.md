@@ -2,6 +2,8 @@
 
 This browser extension adds Japanese subtitles with furigana to some Zutomayo YouTube music videos.
 
+![docs/screenshot.png](docs/screenshot.png)
+
 ## Usage
 
 1. Clone the repository
